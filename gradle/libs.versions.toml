@@ -1,0 +1,21 @@
+[versions]
+kotlin = "2.4.20"
+dokka = "2.2.0"
+android = "9.4.1"
+ksp = "2.3.12"
+
+[libraries]
+kotlinpoet = { module = "com.squareup:kotlinpoet", version = "2.4.0" }
+junit = { module = "junit:junit", version = "4.13.2" }
+truth = { module = "com.google.truth:truth", version = "1.4.5" }
+
+kotlin-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+android-plugin = { module = "com.android.tools.build:gradle", version.ref = "android" }
+ksp-plugin = { module = "com.google.devtools.ksp:symbol-processing-gradle-plugin", version.ref = "ksp" }
+
+[plugins]
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
+pluginPublish = { id = "com.gradle.plugin-publish", version = "2.2.1" }
+mavenPublish = { id = "com.vanniktech.maven.publish", version = "0.37.0" }

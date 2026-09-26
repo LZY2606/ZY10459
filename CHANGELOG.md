@@ -1,0 +1,397 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres
+to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [0.22.0](https://github.com/yshrsmz/BuildKonfig/compare/v0.21.2...v0.22.0) (2026-06-24)
+
+
+### ⚠ BREAKING CHANGES
+
+* remove standalone Kotlin/JS plugin support to unblock Kotlin 2.4.0 ([#333](https://github.com/yshrsmz/BuildKonfig/issues/333))
+
+### Features
+
+* remove standalone Kotlin/JS plugin support to unblock Kotlin 2.4.0 ([#333](https://github.com/yshrsmz/BuildKonfig/issues/333)) ([52f8fe8](https://github.com/yshrsmz/BuildKonfig/commit/52f8fe8ff0248246f2132b9dc37d215808fb891d))
+* update Kotlin monorepo to 2.4.0 ([#333](https://github.com/yshrsmz/BuildKonfig/issues/333)) ([52f8fe8](https://github.com/yshrsmz/BuildKonfig/commit/52f8fe8ff0248246f2132b9dc37d215808fb891d))
+
+
+### Bug Fixes
+
+* **deps:** update dependency com.google.devtools.ksp:symbol-processing-gradle-plugin to v2.3.9 ([#324](https://github.com/yshrsmz/BuildKonfig/issues/324)) ([b506452](https://github.com/yshrsmz/BuildKonfig/commit/b5064523a801edcf623d893503ccc16de06ec533))
+
+## [0.21.2](https://github.com/yshrsmz/BuildKonfig/compare/v0.21.1...v0.21.2) (2026-05-20)
+
+
+### Bug Fixes
+
+* **plugin:** scope BuildKonfigTask outputs to per-source-set leaves ([#321](https://github.com/yshrsmz/BuildKonfig/issues/321)) ([ab5652b](https://github.com/yshrsmz/BuildKonfig/commit/ab5652bf2af289441be764640dbe997065705797))
+
+## [0.21.1](https://github.com/yshrsmz/BuildKonfig/compare/v0.21.0...v0.21.1) (2026-05-19)
+
+
+### Bug Fixes
+
+* move generated sources to build/generated/source/buildkonfig ([#318](https://github.com/yshrsmz/BuildKonfig/issues/318)) ([0804a76](https://github.com/yshrsmz/BuildKonfig/commit/0804a76ea81e8b8dda28e471fe75924ef28c9fc9))
+
+## [0.21.0](https://github.com/yshrsmz/BuildKonfig/compare/v0.20.0...v0.21.0) (2026-05-15)
+
+
+### Features
+
+* **deps:** migrate to AGP 9.2.1 / Gradle 9.4.1 ([#306](https://github.com/yshrsmz/BuildKonfig/issues/306)) ([1257beb](https://github.com/yshrsmz/BuildKonfig/commit/1257beb6b4e2c1ea36159fbeed49f49960498a91))
+
+
+### Bug Fixes
+
+* **deps:** update dependency com.google.devtools.ksp:symbol-processing-gradle-plugin to v2.3.8 ([#316](https://github.com/yshrsmz/BuildKonfig/issues/316)) ([75b5adf](https://github.com/yshrsmz/BuildKonfig/commit/75b5adf6c2694fd131b8cb5251344b0d0e6a7fa1))
+
+## [0.20.0](https://github.com/yshrsmz/BuildKonfig/compare/v0.19.0...v0.20.0) (2026-05-05)
+
+
+### ⚠ BREAKING CHANGES
+
+* `BuildKonfigExtension` fields `packageName`, `objectName` and `exposeObjectWithName` are now `Property<String>` instead of mutable `String` / `String?` vars. Common-case Groovy and Kotlin DSL usage (`packageName = "..."`) is preserved on Gradle 8.2+. Consumers on older Gradle versions, or code that reads `extension.packageName` directly (e.g. third-party plugins extending BuildKonfig), must switch to `.set(...)` and `.orNull` / `.get()` respectively.
+
+### Features
+
+* support standalone Kotlin/JVM and Kotlin/JS projects ([#296](https://github.com/yshrsmz/BuildKonfig/issues/296)) ([0e46e94](https://github.com/yshrsmz/BuildKonfig/commit/0e46e9482b893fa93e92d75e00a6db30d048ca3c))
+
+
+### Bug Fixes
+
+* **deps:** update dependency com.google.devtools.ksp:symbol-processing-gradle-plugin to v2.3.7 ([#292](https://github.com/yshrsmz/BuildKonfig/issues/292)) ([0d57c31](https://github.com/yshrsmz/BuildKonfig/commit/0d57c31620f4d2084b95e73e5c0ad7dc0c4679b7))
+
+
+### Code Refactoring
+
+* migrate BuildKonfigExtension to the Provider API ([5d479eb](https://github.com/yshrsmz/BuildKonfig/commit/5d479ebcdfb35709dab1eb96a0c8b04b6f1956fb))
+
+## [0.19.0](https://github.com/yshrsmz/BuildKonfig/compare/v0.18.0...v0.19.0) (2026-05-04)
+
+
+### ⚠ BREAKING CHANGES
+
+* `BuildKonfigTask` inputs are now `Property<T>` / `MapProperty<...>` instead of lateinit var. Direct task configurators (e.g. `tasks.named("generateBuildKonfig") { ... }`) must use `.set(...)` instead of `=` in the Kotlin DSL.
+
+### Bug Fixes
+
+* **deps:** update kotlin monorepo to v2.3.21 ([#288](https://github.com/yshrsmz/BuildKonfig/issues/288)) ([6be8e78](https://github.com/yshrsmz/BuildKonfig/commit/6be8e782b35f4393a4afbc8f3f22eafa5585713c))
+* drop const modifier from expect side for K2 compatibility ([#290](https://github.com/yshrsmz/BuildKonfig/issues/290)) ([3e6cdb5](https://github.com/yshrsmz/BuildKonfig/commit/3e6cdb56a7035a9ab507a53773e57cdbcca24270))
+
+
+### Code Refactoring
+
+* lazy/Provider configuration to fix Gradle 9 compat and CC ([#291](https://github.com/yshrsmz/BuildKonfig/issues/291)) ([4693daf](https://github.com/yshrsmz/BuildKonfig/commit/4693dafee815cc83d3dd28da1c18a79455a463c8))
+
+## [0.18.0](https://github.com/yshrsmz/BuildKonfig/compare/v0.17.2...v0.18.0) (2026-04-10)
+
+
+### ⚠ BREAKING CHANGES
+
+* When a project has both js and wasmJs targets with `exposeObjectWithName` and no target-specific configs, the plugin now forces expect/actual generation instead of a single common object. `const` fields in common code may no longer be usable as compile-time constants (e.g. in annotation arguments) since the expect declaration has no initializer. ([#274](https://github.com/yshrsmz/BuildKonfig/issues/274))
+
+### Bug Fixes
+
+* expose compiler module as api dependency for Gradle convention plugin support ([#276](https://github.com/yshrsmz/BuildKonfig/issues/276)) ([7246a1b](https://github.com/yshrsmz/BuildKonfig/commit/7246a1bf8f1b6228cc71ea1c216934fe11c9733b))
+* preserve flavor in TargetConfig.copy() ([#278](https://github.com/yshrsmz/BuildKonfig/issues/278)) ([c46ba7c](https://github.com/yshrsmz/BuildKonfig/commit/c46ba7cdd990768e2d3a8e617126681cbf795c50))
+* skip @JsExport on common object when wasmJs target exists ([#274](https://github.com/yshrsmz/BuildKonfig/issues/274)) ([87738c0](https://github.com/yshrsmz/BuildKonfig/commit/87738c0cbf131859a4f66f18eceebae88fca8952))
+
+### Refactoring
+
+* replace nested afterEvaluate with plugins.withType() ([#280](https://github.com/yshrsmz/BuildKonfig/issues/280)) ([78ffed4](https://github.com/yshrsmz/BuildKonfig/commit/78ffed4))
+
+## [0.17.2](https://github.com/yshrsmz/BuildKonfig/compare/v0.17.1...v0.17.2) (2026-04-10)
+
+
+### Bug Fixes
+
+* **deps:** update dependency com.android.tools.build:gradle to v8.10.0 ([#214](https://github.com/yshrsmz/BuildKonfig/issues/214)) ([71d0f0d](https://github.com/yshrsmz/BuildKonfig/commit/71d0f0de6ffb5d89b78fa5efcd5aa89984aeb4ed))
+* **deps:** update dependency com.android.tools.build:gradle to v8.13.2 ([#220](https://github.com/yshrsmz/BuildKonfig/issues/220)) ([a977e10](https://github.com/yshrsmz/BuildKonfig/commit/a977e1079836e22e5c37627ca9d6974c679b6564))
+* **deps:** update dependency com.android.tools.build:gradle to v8.9.2 ([#208](https://github.com/yshrsmz/BuildKonfig/issues/208)) ([bf07374](https://github.com/yshrsmz/BuildKonfig/commit/bf073740e6f5bf89d61b823d322b148a3e77c514))
+* **deps:** update dependency com.google.truth:truth to v1.4.5 ([#235](https://github.com/yshrsmz/BuildKonfig/issues/235)) ([8e12fa2](https://github.com/yshrsmz/BuildKonfig/commit/8e12fa20e58f2a4ba0e5e18765863b60807ec5cd))
+* **deps:** update dependency com.squareup:kotlinpoet to v2.2.0 ([#218](https://github.com/yshrsmz/BuildKonfig/issues/218)) ([1912ff7](https://github.com/yshrsmz/BuildKonfig/commit/1912ff790fd842821f0341502406b5e250604485))
+* **deps:** update dependency com.squareup:kotlinpoet to v2.3.0 ([#268](https://github.com/yshrsmz/BuildKonfig/issues/268)) ([276108a](https://github.com/yshrsmz/BuildKonfig/commit/276108abd9ce0419869cb17a42898a492e31eaf0))
+* **deps:** update kotlin monorepo to v2.1.21 ([#216](https://github.com/yshrsmz/BuildKonfig/issues/216)) ([38e1cbe](https://github.com/yshrsmz/BuildKonfig/commit/38e1cbe5b9b190bebdcb7623e7411e110e763b76))
+* **deps:** update kotlin monorepo to v2.3.20 ([#226](https://github.com/yshrsmz/BuildKonfig/issues/226)) ([b56a8fe](https://github.com/yshrsmz/BuildKonfig/commit/b56a8fe8aa97f2b212554955ad701eaed6b0c575))
+* **sample:** update samples for Kotlin 2.3.20 compatibility ([#270](https://github.com/yshrsmz/BuildKonfig/issues/270)) ([7982d1a](https://github.com/yshrsmz/BuildKonfig/commit/7982d1aa2d76bc9d3ff9ac252a6e749aedf4b519))
+* validate buildConfigField name is a valid Kotlin identifier ([#272](https://github.com/yshrsmz/BuildKonfig/issues/272)) ([e1647fc](https://github.com/yshrsmz/BuildKonfig/commit/e1647fc526e9e8259e7cf7f54cf925549d7900cc))
+* warn instead of throwing when defaultConfigs is empty ([#271](https://github.com/yshrsmz/BuildKonfig/issues/271)) ([2fe62b8](https://github.com/yshrsmz/BuildKonfig/commit/2fe62b8d2b6c0e151c5fc01302a05b959a5f1384))
+
+## [0.17.1](https://github.com/yshrsmz/BuildKonfig/compare/v0.17.0...v0.17.1) (2025-03-25)
+
+
+### Bug Fixes
+
+* **deps:** update dependency com.android.tools.build:gradle to v8.8.2 ([#200](https://github.com/yshrsmz/BuildKonfig/issues/200)) ([a17fa2f](https://github.com/yshrsmz/BuildKonfig/commit/a17fa2f9860dedcded92b23bcd9763db872fd425))
+* **deps:** update dependency com.android.tools.build:gradle to v8.9.0 ([#201](https://github.com/yshrsmz/BuildKonfig/issues/201)) ([bbac799](https://github.com/yshrsmz/BuildKonfig/commit/bbac799a25dcfc462263d7ebe7fee3ccbb81e0b0))
+* **deps:** update dependency com.android.tools.build:gradle to v8.9.1 ([#205](https://github.com/yshrsmz/BuildKonfig/issues/205)) ([390e6bc](https://github.com/yshrsmz/BuildKonfig/commit/390e6bca8f026c2f3f201c1c223816dd2be0992e))
+* **deps:** update dependency com.squareup:kotlinpoet to v2.1.0 ([#198](https://github.com/yshrsmz/BuildKonfig/issues/198)) ([864030c](https://github.com/yshrsmz/BuildKonfig/commit/864030c82110d4fa03e9d4568ff0a34161b4149c))
+* **deps:** update kotlin monorepo to v2.1.20 ([#204](https://github.com/yshrsmz/BuildKonfig/issues/204)) ([a963c12](https://github.com/yshrsmz/BuildKonfig/commit/a963c12825c19addaf2754f69ba249be5f92601c))
+
+## [0.17.0](https://github.com/yshrsmz/BuildKonfig/compare/v0.16.0...v0.17.0) (2025-02-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency com.android.tools.build:gradle to v8.8.0 ([#124](https://github.com/yshrsmz/BuildKonfig/issues/124)) ([cfe6e69](https://github.com/yshrsmz/BuildKonfig/commit/cfe6e692bbf17866352295a52a7f52c82485a99c))
+* **deps:** update dependency com.android.tools.build:gradle to v8.8.1 ([#193](https://github.com/yshrsmz/BuildKonfig/issues/193)) ([b305d1d](https://github.com/yshrsmz/BuildKonfig/commit/b305d1d244229589af42128fa9738bed8ef0045f))
+* **deps:** update kotlin monorepo to v2.1.10 ([#175](https://github.com/yshrsmz/BuildKonfig/issues/175)) ([760faae](https://github.com/yshrsmz/BuildKonfig/commit/760faae92eb70874994c80e2a0d2cd7420e73948))
+
+
+### Miscellaneous Chores
+
+* prepare for release 0.17.0 ([4c70693](https://github.com/yshrsmz/BuildKonfig/commit/4c706931a646093a60ca29adf93f8361048951fd))
+
+## [0.16.0](https://github.com/yshrsmz/BuildKonfig/compare/v0.15.2...v0.16.0) (2025-02-13)
+
+
+### Bug Fixes
+
+* **deps:** fix missed commits about gradle wrapper version ([#185](https://github.com/yshrsmz/BuildKonfig/issues/185)) ([3a35b48](https://github.com/yshrsmz/BuildKonfig/commit/3a35b48297d82c05fe4b2fa667eb027c243e318e))
+* **deps:** update dependency com.squareup:kotlinpoet to v1.18.1 ([#158](https://github.com/yshrsmz/BuildKonfig/issues/158)) ([54557e3](https://github.com/yshrsmz/BuildKonfig/commit/54557e372e45035c217a47869026a5e1214f785a))
+* **deps:** update dependency com.squareup:kotlinpoet to v2 ([#171](https://github.com/yshrsmz/BuildKonfig/issues/171)) ([c6c9090](https://github.com/yshrsmz/BuildKonfig/commit/c6c909056bffb6fcd9713d70795bd897736ee236))
+
+
+### Miscellaneous Chores
+
+* prepare for release 0.16.0 ([f08a48b](https://github.com/yshrsmz/BuildKonfig/commit/f08a48b20d7fe869af9c55d02f8d85304fb85281))
+* **deps:** update kotlin monorepo to v2.0.21 ([#142](https://github.com/yshrsmz/BuildKonfig/issues/142)) ([b5f6275](https://github.com/yshrsmz/BuildKonfig/commit/b5f62751cc9fe250c3781a6edba5cef144b52660))
+
+## [0.15.2](https://github.com/yshrsmz/BuildKonfig/compare/v0.15.1...v0.15.2) (2024-08-31)
+
+
+### Miscellaneous
+
+* **deps:** update actions/cache action to v4 ([#134](https://github.com/yshrsmz/BuildKonfig/issues/134)) ([484b95c](https://github.com/yshrsmz/BuildKonfig/commit/484b95cb31f8230d543fb1610fbef4eb079dddd3))
+* **deps:** update actions/setup-java action to v4 ([#120](https://github.com/yshrsmz/BuildKonfig/issues/120)) ([5446b80](https://github.com/yshrsmz/BuildKonfig/commit/5446b801b33c01acd11c2f8abf0d2f362218ce67))
+* **deps:** update actions/upload-artifact action to v4 ([#126](https://github.com/yshrsmz/BuildKonfig/issues/126)) ([159d193](https://github.com/yshrsmz/BuildKonfig/commit/159d19355fd07c250207f9d2fcd635d0bf1b469d))
+* **deps:** update dependency org.jetbrains.dokka to v1.9.20 ([#141](https://github.com/yshrsmz/BuildKonfig/issues/141)) ([823ae08](https://github.com/yshrsmz/BuildKonfig/commit/823ae083102b0fdcff57da3a76160807490e28aa))
+* **deps:** update kotlin monorepo to v1.9.22 ([#132](https://github.com/yshrsmz/BuildKonfig/issues/132)) ([ab37a22](https://github.com/yshrsmz/BuildKonfig/commit/ab37a222a01c48e592632154113503e440523325))
+* **deps:** update plugin versions to v0.51.0 ([#137](https://github.com/yshrsmz/BuildKonfig/issues/137)) ([237622a](https://github.com/yshrsmz/BuildKonfig/commit/237622aa2513967b43933e6186a5aca58dc8318b))
+
+
+### Bug Fixes
+
+* **deps:** [#160](https://github.com/yshrsmz/BuildKonfig/issues/160) Kotlin 2.0 and fixed Issue With New Compiler Options DSL ([#162](https://github.com/yshrsmz/BuildKonfig/issues/162)) ([4655ce3](https://github.com/yshrsmz/BuildKonfig/commit/4655ce310028a3dda6f6b72149f4617a495b8f81))
+* **deps:** update dependency com.google.truth:truth to v1.2.0 ([#131](https://github.com/yshrsmz/BuildKonfig/issues/131)) ([10a6a29](https://github.com/yshrsmz/BuildKonfig/commit/10a6a2904404e0cd101e7a219f800fb4cfc6ce14))
+* **deps:** update dependency com.google.truth:truth to v1.3.0 ([#136](https://github.com/yshrsmz/BuildKonfig/issues/136)) ([6f58e2f](https://github.com/yshrsmz/BuildKonfig/commit/6f58e2fd07a2dc7448f742bfa9bcc3c8d6869d30))
+* **deps:** update dependency com.google.truth:truth to v1.4.2 ([#138](https://github.com/yshrsmz/BuildKonfig/issues/138)) ([aa2b18b](https://github.com/yshrsmz/BuildKonfig/commit/aa2b18b673431b0fd41a641ff5735bb06944759a))
+* **deps:** update dependency com.google.truth:truth to v1.4.3 ([#155](https://github.com/yshrsmz/BuildKonfig/issues/155)) ([84c6e23](https://github.com/yshrsmz/BuildKonfig/commit/84c6e23337fc827a43f0cc62e3bc859f0d501410))
+* **deps:** update dependency com.google.truth:truth to v1.4.4 ([#159](https://github.com/yshrsmz/BuildKonfig/issues/159)) ([627acda](https://github.com/yshrsmz/BuildKonfig/commit/627acda65103fef7cf11d33a58f15a93c9c66670))
+* **deps:** update dependency com.squareup:kotlinpoet to v1.15.2 ([#121](https://github.com/yshrsmz/BuildKonfig/issues/121)) ([ff3a22d](https://github.com/yshrsmz/BuildKonfig/commit/ff3a22d912997c48fcc98244ff27e810945cfe4c))
+* **deps:** update dependency com.squareup:kotlinpoet to v1.15.3 ([#125](https://github.com/yshrsmz/BuildKonfig/issues/125)) ([4e6daf4](https://github.com/yshrsmz/BuildKonfig/commit/4e6daf47636a72211467dfa34b4f950946568d1b))
+* **deps:** update dependency com.squareup:kotlinpoet to v1.17.0 ([#135](https://github.com/yshrsmz/BuildKonfig/issues/135)) ([9f3dc3c](https://github.com/yshrsmz/BuildKonfig/commit/9f3dc3c4b242c013e0fe7e6f81eddde9504d4189))
+
+## [0.15.1](https://github.com/yshrsmz/BuildKonfig/compare/v0.15.0...v0.15.1) (2023-11-27)
+
+
+### Miscellaneous
+
+* **ci:** configure concurrency for pullrequest.yml ([#112](https://github.com/yshrsmz/BuildKonfig/issues/112)) ([6a87881](https://github.com/yshrsmz/BuildKonfig/commit/6a87881b4a90835aa01cb0ad91c8e262bd4267ab))
+* **deps:** update google-github-actions/release-please-action action to v3.7.13 ([#111](https://github.com/yshrsmz/BuildKonfig/issues/111)) ([d747cfc](https://github.com/yshrsmz/BuildKonfig/commit/d747cfc508c519894843275ce1e45e27722fdc80))
+* **deps:** update kotlin monorepo to v1.9.21 ([#118](https://github.com/yshrsmz/BuildKonfig/issues/118)) ([1cf4888](https://github.com/yshrsmz/BuildKonfig/commit/1cf488866083635b3a59b75e85a6b16332b119d2))
+* **deps:** update plugin versions to v0.50.0 ([#116](https://github.com/yshrsmz/BuildKonfig/issues/116)) ([493547c](https://github.com/yshrsmz/BuildKonfig/commit/493547c0924ded821d2cec56796eac4f4353b94f))
+* **docs:** rename CHANGELOGS.md -&gt; CHANGELOG.md ([#115](https://github.com/yshrsmz/BuildKonfig/issues/115)) ([8873b01](https://github.com/yshrsmz/BuildKonfig/commit/8873b01bb2d15dbbfa26d10d3d2b58ed1319150b))
+
+
+### Bug Fixes
+
+* **ci:** fix extra-fIles config in release-please action ([#113](https://github.com/yshrsmz/BuildKonfig/issues/113)) ([65288b2](https://github.com/yshrsmz/BuildKonfig/commit/65288b2560402d02a8b07b417932898dcabf4bb7))
+* **deps:** update dependency com.squareup:kotlinpoet to v1.15.1 ([#117](https://github.com/yshrsmz/BuildKonfig/issues/117)) ([2c40f50](https://github.com/yshrsmz/BuildKonfig/commit/2c40f504022bb7f779e96e8d22954f4aec46eea1))
+
+## [0.15.0] - 2023-11-08
+
+### Changed
+
+- Kotlin 1.9.20. ([#106](https://github.com/yshrsmz/BuildKonfig/pull/106))
+
+## [0.14.0]
+
+### Changed
+
+- Kotlin 1.9.0 by [hbmartin](https://github.com/hbmartin). ([#89](https://github.com/yshrsmz/BuildKonfig/pull/89))
+- Android Gradle Plugin 8.1.0
+- Gradle Wrapper 8.2.1
+
+### Fixed
+
+- Fix `Plugin generates invalid class so build fails` by [hbmartin](https://github.com/hbmartin). ([#78](https://github.com/yshrsmz/BuildKonfig/issues/78))
+
+## [0.13.3] - 2022-08-07
+
+### Added
+
+- const value support by [@Prototik](https://github.com/Prototik) ([#42](https://github.com/yshrsmz/BuildKonfig/issues/42), [#70](https://github.com/yshrsmz/BuildKonfig/pull/70))
+
+### Changed
+
+- Android Gradle Plugin 7.2.2
+- Unified API. `buildConfigField` can now configure if it's nullable or const.
+- Deprecated some methods. use `buildConfigField` with optional parameters.
+
+## [0.12.0] - 2022-05-16
+
+### Changed
+
+- Kotlin 1.6.21
+- Android Gradle Plugin 7.2.0
+- Gradle Wrapper 7.4.2
+
+### Fixed
+
+- Gradle configuration cache compatibility ([#66](https://github.com/yshrsmz/BuildKonfig/issues/66))
+
+## [0.11.0] - 2021-10-19
+
+### Added
+
+- Support intermediate SourceSets(a.k.a. HMPP) ([#38](https://github.com/yshrsmz/BuildKonfig/issues/38))
+
+### Fixed
+
+- Java version compatibility ([#60](https://github.com/yshrsmz/BuildKonfig/issues/60))
+
+## [0.10.2] - 2021-10-01
+
+### Fixed
+
+- Fix `Duplicate content roots detected` warning in IDE ([#56](https://github.com/yshrsmz/BuildKonfig/issues/56))
+
+## [0.10.1] - 2021-09-24
+
+### Changed
+
+- Improved dependent compile task detection
+- Kotlin 1.5.30
+- Android Gradle Plugin 7.0.2
+
+## [0.9.0] - 2021-08-05
+
+### Changed
+
+- Kotlin 1.5.21
+- Android Gradle Plugin 4.2.2
+- Gradle Wrapper 7.1.1
+
+## [0.8.0] - 2021-06-11
+
+### Changed
+
+- Kotlin 1.5.10
+- Android Gradle Plugin 4.2.1
+- Gradle Wrapper 6.9
+
+## [0.7.1] - 2021-06-09
+
+### Changed
+
+- Better Gradle Kotlin DSL support ([#13](https://github.com/yshrsmz/BuildKonfig/issues/13)
+  , [#41](https://github.com/yshrsmz/BuildKonfig/issues/41))
+
+## [0.7.0] - 2020-08-24
+
+### Changed
+
+- Kotlin 1.4.0 ([#36](https://github.com/yshrsmz/BuildKonfig/issues/36))
+- Gradle wrapper 6.6
+
+### Added
+
+- New `exposeObjectWithName` to support exposing the generated objects(in other words, an option make it public)
+  . ([#31](https://github.com/yshrsmz/BuildKonfig/issues/31), [#35](https://github.com/yshrsmz/BuildKonfig/issues/35))
+
+## [0.6.0] - 2020-08-05
+
+### Changed
+
+- Kotlin 1.3.72
+- Android Gradle Plugin 4.0.1
+- Gradle wrapper 6.5.1
+
+### Added
+
+- New `objectName` to support changing the name of the generated objects.
+
+## [0.5.1] - 2020-03-31
+
+### Changed
+
+- Kotlin 1.3.71
+- Android Gradle Plugin 3.6.1
+
+## [0.5.0] - 2020-01-25
+
+### Added
+
+- New `buildConfigNullableField` to support nullable value by [@MikolajKakol](https://github.com/MikolajKakol)
+  . ([#21](https://github.com/yshrsmz/BuildKonfig/pull/21))
+
+## [0.4.1] -2019-12-12
+
+### Changed
+
+- Kotlin 1.3.61
+
+## [0.4.0] - 2019-12-12
+
+### Changed
+
+- Simple `defaultConfigs` only configuration now creates object in common sourceSet.
+
+## [0.3.4] - 2019-08-23
+
+### Changed
+
+- Kotlin 1.3.50
+- Android Gradle Plugin 3.5.0
+- Gradle 5.6
+
+## [0.3.3] - 2019-07-12
+
+### Changed
+
+- Kotlin 1.3.41
+
+## [0.3.2] - 2019-07-10
+
+### Changed
+
+- Kotlin 1.3.31(though this shouldn't be a problem as it's just a plugin dependency)
+
+### Fixed
+
+- Issue with task dependency in some cases
+
+## [0.3.1] - 2019-02-25
+
+### Fixed
+
+- Delete old `BuildKonfig` objects before executing the task. ([#12](https://github.com/yshrsmz/BuildKonfig/issues/12))
+
+## [0.3.0] - 2019-02-09
+
+### Added
+
+- Support build flavor ([#8](https://github.com/yshrsmz/BuildKonfig/issues/8)). See readme for the detail.
+
+## [0.2.1] - 2019-02-05
+
+### Fixed
+
+- Generated codes are not properly recognized by IDE sometimes ([#7](https://github.com/yshrsmz/BuildKonfig/issues/7))
+
+## [0.2.0] - 2019-02-03
+
+### Changed
+
+- BuildKonfig task is renamed to `generateBuildKonfig`
+- BuildKonfig object is now internal [#6](https://github.com/yshrsmz/BuildKonfig/issues/6))
+- Escape `$` in String value ([#5](https://github.com/yshrsmz/BuildKonfig/issues/5))
+- `${target}Main` is not properly handled
+
+## [0.1.0] - 2019-02-01
+
+- First public release

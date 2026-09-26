@@ -1,0 +1,534 @@
+BuildKonfig
+===
+
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.codingfeline.buildkonfig/buildkonfig-gradle-plugin/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.codingfeline.buildkonfig/buildkonfig-gradle-plugin)
+
+BuildConfig for Kotlin Multiplatform and Kotlin/JVM projects.  
+It currently supports embedding values from gradle file.
+
+## Table Of Contents
+
+- [Motivation](#motivation)
+- [Usage](#usage)
+    - [Requirements](#requirements)
+    - [Gradle Configuration](#gradle-configuration)
+    - [Non-multiplatform projects](#non-multiplatform-projects)
+    - [Product Flavor?](#product-flavor)
+    - [Overwriting Values](#overwriting-values)
+    - [HMPP](#hmpp)
+- [Supported Types](#supported-types)
+- [Try out the sample](#try-out-the-sample)
+
+<a name="motivation"/>
+
+## Motivation
+
+Passing values from Android/iOS or any other platform code should work, but it's a hassle.  
+Setting up Android to read values from properties and add those into BuildConfig, and do the equivalent in iOS?  
+Rather I'd like to do it once.
+
+
+<a name="usage"/>
+
+## Usage
+
+<a name="requirements"/>
+
+### Requirements
+
+- Kotlin **2.1.0** or later
+- One of: Kotlin Multiplatform or Kotlin/JVM plugin applied to the project (use Kotlin/JS via the KMP `js()` target)
+- Gradle 8 or later
+
+<a name="gradle-configuration"/>
+
+### Gradle Configuration
+
+#### Simple configuration
+
+<details open>
+<summary>Kotlin DSL</summary>
+
+```kotlin
+import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:2.3.20")
+        classpath("com.codingfeline.buildkonfig:buildkonfig-gradle-plugin:latest_version")
+    }
+}
+
+plugins {
+    kotlin("multiplatform")
+    id("com.codingfeline.buildkonfig")
+}
+
+kotlin {
+    // your target config...
+    androidTarget()
+    iosX64('ios')
+}
+
+buildkonfig {
+    packageName = "com.example.app"
+    // objectName = "YourAwesomeConfig"
+    // exposeObjectWithName = "YourAwesomePublicConfig"
+
+    defaultConfigs {
+        buildConfigField(STRING, "name", "value")
+    }
+}
+```
+
+</details>
+
+<details>
+<summary>Groovy DSL</summary>
+
+```gradle
+buildScript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:2.3.20'
+        classpath 'com.codingfeline.buildkonfig:buildkonfig-gradle-plugin:latest_version'
+    }
+}
+
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'com.codingfeline.buildkonfig'
+
+kotlin {
+    // your target config...
+    androidTarget()
+    iosX64('ios')
+}
+
+buildkonfig {
+    packageName = 'com.example.app'
+    // objectName = 'YourAwesomeConfig'
+    // exposeObjectWithName = 'YourAwesomePublicConfig'
+
+    defaultConfigs {
+        buildConfigField 'STRING', 'name', 'value'
+    }
+}
+```
+
+</details>
+
+- `packageName` Set the package name where BuildKonfig is being placed. **Required**.
+- `objectName` Set the name of the generated object. Defaults to `BuildKonfig`.
+- `exposeObjectWithName` Set the name of the generated object, and make it public.
+- `defaultConfigs` Set values which you want to have in common. If omitted, a warning is logged and code generation is skipped.
+
+To generate BuildKonfig files, run `generateBuildKonfig` task.  
+This task will be automatically run upon execution of kotlin compile tasks.
+
+Above configuration will generate following simple object.
+
+```kotlin
+// commonMain
+package com.example.app
+
+internal object BuildKonfig {
+    val name: String = "value"
+}
+```
+
+#### Configuring `target` dependent values
+
+If you want to change value depending on your targets, you can use `targetConfigs` to define target-dependent values.
+
+<details open>
+<summary>Kotlin DSL</summary>
+
+```kotlin
+import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:2.3.20")
+        classpath("com.codingfeline.buildkonfig:buildkonfig-gradle-plugin:latest_version")
+    }
+}
+
+plugins {
+    kotlin("multiplatform")
+    id("com.codingfeline.buildkonfig")
+}
+
+kotlin {
+    // your target config...
+    androidTarget()
+    iosX64('ios')
+}
+
+buildkonfig {
+    packageName = "com.example.app"
+
+    // default config is required
+    defaultConfigs {
+        buildConfigField(STRING, "name", "value")
+    }
+
+    targetConfigs {
+        // names in create should be the same as target names you specified
+        create("android") {
+            buildConfigField(STRING, "name2", "value2")
+            buildConfigField(STRING, "nullableField", "NonNull-value", nullable = true)
+        }
+
+        create("ios") {
+            buildConfigField(STRING, "name", "valueForNative")
+        }
+    }
+}
+```
+
+</details>
+
+<details>
+<summary>Groovy DSL</summary>
+
+```gradle
+buildScript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:2.3.20'
+        classpath 'com.codingfeline.buildkonfig:buildkonfig-gradle-plugin:latest_version'
+    }
+}
+
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'com.codingfeline.buildkonfig'
+
+kotlin {
+    // your target config...
+    androidTarget()
+    iosX64('ios')
+}
+
+buildkonfig {
+    packageName = 'com.example.app'
+
+    // default config is required
+    defaultConfigs {
+        buildConfigField 'STRING', 'name', 'value'
+        buildConfigField 'STRING', 'nullableField', null, nullable: true
+    }
+
+    targetConfigs {
+        // this name should be the same as target names you specified
+        android {
+            buildConfigField 'STRING', 'name2', 'value2'
+            buildConfigField 'STRING', 'nullableField', 'NonNull-value', nullable: true
+        }
+
+        ios {
+            buildConfigField 'STRING', 'name', 'valueForNative'
+        }
+    }
+}
+```
+
+</details>
+
+- `packageName`
+  - Sets the package name where BuildKonfig is being placed. **Required**.
+- `objectName` 
+  - Sets the name of the generated object. Defaults to `BuildKonfig`.
+- `exposeObjectWithName`
+  - Sets the name of the generated object, and make it public.
+- `defaultConfigs`
+  - Sets values which you want to have in common. If omitted, a warning is logged and code generation is skipped.
+- `targetConfigs` 
+  - Sets target specific values as closure. You can overwrite values specified in `defaultConfigs`.
+- `buildConfigField(type: String, name: String, value: String)`
+  - Adds new value or overwrite existing one.
+- `buildConfigField(type: String, name: String, value: String, nullable: Boolean = false, const: Boolean = false)` 
+  - In addition to above method, this can configure `nullable` and `const` declarations.
+
+> [!NOTE]
+> When `targetConfigs` are present, BuildKonfig is generated as `expect`/`actual`. The K2 compiler (Kotlin 2.x)
+> does not allow `expect const val`, so the common-side declaration is emitted as plain `val` even if you set
+> `const = true`. Each target's `actual` declaration still uses `actual const val`, so the value is a
+> compile-time constant inside target-specific source sets — but **common code cannot reference it as a
+> compile-time constant** (e.g. inside `when` branches that require constants, or annotation arguments).
+> A warning is logged at generation time for affected fields.
+
+Above configuration will generate following codes.
+
+```kotlin
+// commonMain
+package com.example.app
+
+internal expect object BuildKonfig {
+    val name: String
+    val nullableField: String?
+}
+```
+
+```kotlin
+// androidMain
+package com.example.app
+
+internal actual object BuildKonfig {
+    actual val name: String = "value"
+    actual val nullableField: String? = "NonNull-value"
+    val name2: String = "value2"
+}
+```
+
+```kotlin
+// iosMain
+package com.example.app
+
+internal actual object BuildKonfig {
+    actual val name: String = "valueForNative"
+    actual val nullableField: String? = null
+}
+```
+
+<a name="non-multiplatform-projects"/>
+
+### Non-multiplatform projects
+
+BuildKonfig also works on standalone Kotlin/JVM projects.
+Apply `org.jetbrains.kotlin.jvm` instead of multiplatform, and use the same `buildkonfig { ... }` block.
+For Kotlin/JS, use the Kotlin Multiplatform plugin with a `js()` target — the standalone `org.jetbrains.kotlin.js` plugin was removed in Kotlin 2.4.0.
+
+<details open>
+<summary>Kotlin DSL</summary>
+
+```kotlin
+import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
+
+plugins {
+    kotlin("jvm")
+    id("com.codingfeline.buildkonfig")
+}
+
+buildkonfig {
+    packageName = "com.example.app"
+
+    defaultConfigs {
+        buildConfigField(STRING, "name", "value")
+    }
+}
+```
+
+</details>
+
+<details>
+<summary>Groovy DSL</summary>
+
+```gradle
+apply plugin: 'org.jetbrains.kotlin.jvm'
+apply plugin: 'com.codingfeline.buildkonfig'
+
+buildkonfig {
+    packageName = 'com.example.app'
+
+    defaultConfigs {
+        buildConfigField 'STRING', 'name', 'value'
+    }
+}
+```
+
+</details>
+
+A single concrete object is generated into the `main` source set — there is no `expect`/`actual` split, since there is only one target.
+
+```kotlin
+// src/main/kotlin (generated)
+package com.example.app
+
+internal object BuildKonfig {
+    val name: String = "value"
+}
+```
+
+The `defaultConfigs` block (including flavors) is fully supported. `targetConfigs` are not meaningful for a single-target project; if you declare them, a warning is logged and they are ignored.
+
+<a name="product-flavor"/>
+
+### Product Flavor?
+
+Yes(sort of).  
+Kotlin Multiplatform Project does not support product flavor. Kotlin/Native part of the project has release/debug
+distinction, but it's not global.  
+So to mimick product flavor capability of Android, we need to provide additional property in order to determine flavors.
+
+Specify default flavor in your `gradle.properties`
+
+```properties
+# ROOT_DIR/gradle.properties
+buildkonfig.flavor=dev
+```
+
+<details open>
+<summary>Kotlin DSL</summary>
+
+```kotlin
+import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
+import com.codingfeline.buildkonfig.gradle.TargetConfigDsl
+
+buildkonfig {
+    packageName = "com.example.app"
+
+    // default config is required
+    defaultConfigs {
+        buildConfigField(STRING, "name", "value")
+    }
+    // flavor is passed as a first argument of defaultConfigs
+    defaultConfigs("dev") {
+        buildConfigField(STRING, "name", "devValue")
+    }
+
+    targetConfigs {
+        create("android") {
+            buildConfigField(STRING, "name2", "value2")
+        }
+
+        create("ios") {
+            buildConfigField(STRING, "name", "valueIos")
+        }
+    }
+    // flavor is passed as a first argument of targetConfigs
+    targetConfigs("dev") {
+        create("ios") {
+            buildConfigField(STRING, "name", "devValueIos")
+        }
+    }
+}
+```
+
+</details>
+
+<details>
+<summary>Groovy DSL</summary>
+
+```gradle
+// ./kmp_project/build.gradle
+
+buildkonfig {
+    packageName = 'com.example.app'
+
+    // default config is required
+    defaultConfigs {
+        buildConfigField 'STRING', 'name', 'value'
+    }
+    // flavor is passed as a first argument of defaultConfigs
+    defaultConfigs("dev") {
+        buildConfigField 'STRING', 'name', 'devValue'
+    }
+
+    targetConfigs {
+        android {
+            buildConfigField 'STRING', 'name2', 'value2'
+        }
+
+        ios {
+            buildConfigField 'STRING', 'name', 'valueIos'
+        }
+    }
+    // flavor is passed as a first argument of targetConfigs
+    targetConfigs("dev") {
+        ios {
+            buildConfigField 'STRING', 'name', 'devValueIos'
+        }
+    }
+}
+```
+
+</details>
+
+In a development phase you can change value in `gradle.properties` as you like.  
+In CI environment, you can pass value via CLI `$ ./gradlew build -Pbuildkonfig.flavor=release`
+
+
+<a name="overwriting-values"/>
+
+### Overwriting Values
+
+If you configure same field across multiple defaultConfigs and targetConfigs, flavored targetConfigs is the strongest.
+
+Lefter the stronger.
+
+```
+Flavored TargetConfig > TargetConfig > Flavored DefaultConfig > DefaultConfig
+```
+
+<a name="hmpp"/>
+
+### HMPP Support
+
+a.k.a `Intermediate SourceSets`. (see [Share code on platforms](https://kotlinlang.org/docs/mpp-share-on-platforms.html)
+for detail.)  
+BuildKonfig supports HMPP. However there's some limitations.
+
+**When you add a targetConfigs for a intermediate source set, you can't define another targetConfigs for its children
+source sets.**
+
+For example, say your have a source set structure like below.
+
+```
+- commonMain
+  - appMain
+    - androidMain
+    - desktopMain
+      - macosArm64Main
+      - linuxX64Main
+      - mingwX64Main
+  - jsCommonMain
+    - browserMain
+    - nodeMain
+  - iosMain
+    - iosArm64Main
+    - iosX64Main
+```
+
+If you add a targetConfigs for `appMain`, you can't add configs for androidMain, desktopMain, or children of
+desktopMain. This is because BuildKonfig uses expect/actual to provide different values for each BuildKonfig object.
+When you provide a configuration for `appMain`, actual declaration of BuildKonfig object is created in `appMain`. So any
+additional actual declarations in children SourceSets leads to compile-time error.
+
+
+<a name="supported-types"/>
+
+## Supported Types
+
+- String
+- Int
+- Long
+- Float
+- Boolean
+
+<a name="try-out-the-sample"/>
+
+## Try out the sample
+
+There are two samples; `sample` and `sample-kts`.
+As its name implies, `sample-kts` a Kotlin DSL sample, and the other is a traditional Groovy DSL.
+
+Have a look at `./sample` directory.
+
+```
+# Publish the latest version of the plugin to test maven repository(./build/localMaven)
+$ ./gradlew publishAllPublicationsToTestMavenRepository -PRELEASE_SIGNING_ENABLED=false
+
+# Try out the samples.
+# BuildKonfig will be generated in ./sample/build/buildkonfig
+$ ./gradlew -p sample generateBuildKonfig
+```

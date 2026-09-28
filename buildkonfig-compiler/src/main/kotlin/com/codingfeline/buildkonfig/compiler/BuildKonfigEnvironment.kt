@@ -26,9 +26,9 @@ class BuildKonfigEnvironment(
         }
 
         if (data.hasTargetSpecificConfigs) {
-            compileExpectActual(data, writer, logger)
+            errors += compileExpectActual(data, writer, logger)
         } else {
-            compileCommonObject(data, writer, logger)
+            errors += compileCommonObject(data, writer, logger)
         }
 
         return if (errors.isEmpty()) {

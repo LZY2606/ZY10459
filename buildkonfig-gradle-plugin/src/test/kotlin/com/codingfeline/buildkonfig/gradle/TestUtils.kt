@@ -121,3 +121,23 @@ val settingsGradle = """
             |   }
             |}
         """.trimMargin()
+
+/**
+ * Obviously-fake secret used in fixtures that need a credential-shaped value. It is not,
+ * and must never be, a real token — tests assert it stays out of failure output.
+ */
+const val FAKE_SECRET = "fake-secret-fixture-00000000-not-a-real-token"
+
+/**
+ * Groovy snippet for fixture build scripts that fails the build when it is executed
+ * against the real user Gradle home (`~/.gradle`). TestKit already runs fixtures with an
+ * isolated Gradle user home, so user-level `gradle.properties` / init scripts are never
+ * read; this guard makes that isolation explicit and fails loudly if it ever regresses.
+ */
+val gradleUserHomeIsolationGuard = """
+            |def __userGradleHome = new File(System.getProperty('user.home'), '.gradle')
+            |if (gradle.gradleUserHomeDir.canonicalPath == __userGradleHome.canonicalPath) {
+            |    throw new GradleException('Fixture must not read the user Gradle home (~/.gradle)')
+            |}
+            |
+        """.trimMargin()
